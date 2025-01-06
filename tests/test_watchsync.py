@@ -5,7 +5,7 @@ import subprocess
 import threading
 import time
 import unittest
-
+import tracemalloc
 from cleo import exceptions
 from cleo.testers.command_tester import CommandTester
 
@@ -15,6 +15,8 @@ from watchsync.daemon.connector import Connector
 from watchsync.daemon.watchsyncd import main as watchsyncd_main
 from watchsync.logger import logger as base_logger
 
+
+tracemalloc.start()
 
 class TestTreytuxControl(unittest.TestCase):
     def setUp(self):

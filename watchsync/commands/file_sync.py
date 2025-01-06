@@ -36,7 +36,4 @@ class WatchSyncCommand(Command):
                 for event in events
             ]
             for future in concurrent.futures.as_completed(futures):
-                try:
-                    future.result()
-                except Exception as exc:
-                    self._error(f"Generated an exception: {exc}")
+                future.result()

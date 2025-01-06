@@ -29,9 +29,6 @@ class Watchsyncd:
                 )
                 raise RuntimeError("Daemon is already running")
             os.remove(self.socket_file)
-        if not os.path.exists(self.config.config_path):
-            logger.info(f"Creating directory {self.config.config_path}")
-            os.mkdir(self.config.config_path)
         logger.info(f"Create socket in {self.socket_file}")
         server_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         server_socket.bind(self.socket_file)

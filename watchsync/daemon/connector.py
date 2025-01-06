@@ -15,9 +15,9 @@ class Connector:
             response = self.send("status")
         except ConnectionRefusedError:
             return False
-        if response and response == "OK":
-            return True
-        return False
+        if not response:
+            return False
+        return True
 
     def send(self, command: str):
         _socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)

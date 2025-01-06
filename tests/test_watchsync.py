@@ -12,7 +12,7 @@ from cleo.testers.command_tester import CommandTester
 from watchsync import APP_NAME, __version__, create_app, utils
 from watchsync.config import Config
 from watchsync.daemon.connector import Connector
-from watchsync.daemon.watchsyncd import main as filesynd_main
+from watchsync.daemon.watchsyncd import main as watchsyncd_main
 from watchsync.logger import logger as base_logger
 
 
@@ -21,9 +21,7 @@ class TestTreytuxControl(unittest.TestCase):
         super().setUp()
         self.app = create_app()
         self.workspace = os.path.join(os.path.dirname(__file__), "workspace")
-        self.config = Config.get_config(
-            os.path.join(self.workspace, "config.yml")
-        )
+        self.config = Config(os.path.join(self.workspace, "config.yml"))
 
     def path(self, *args):
         return os.path.join(self.workspace, *args)
@@ -77,7 +75,7 @@ class TestTreytuxControl(unittest.TestCase):
         result = utils.shell("command-not-exists", show_stdout=False)
         self.assertEqual(result, None)
 
-    def test_config_file_not_exists(self):
+    def test_config(self):
         self.reset_test_folder()
         os.remove(self.config.config_file)
         result_code, output = self.execute("version")
@@ -88,6 +86,9 @@ class TestTreytuxControl(unittest.TestCase):
         self.assertTrue(os.path.exists(self.config.config_file))
         self.assertEqual(self.config.get("not-exist", "default"), "default")
         self.assertIn("'config_file':", str(self.config))
+        self.assertEqual(self.config.__repr__(), str(self.config))
+        with self.assertRaises(FileNotFoundError):
+            Config.get_config(config_file="/not-exists", use_defaults=False)
 
     def test_help(self):
         cmd = CommandTester(self.app.find("help-list"))
@@ -117,7 +118,7 @@ class TestTreytuxControl(unittest.TestCase):
         )
 
     def test_logger(self):
-        logger = base_logger.getChild("FilesyncDaemon")
+        logger = base_logger.getChild("WatchSyncDaemon")
         with self.assertLogs(APP_NAME, level="ERROR") as cm:
             logger.error("Sample test error.")
         self.assertIn("Sample test error.", cm.output[0])
@@ -279,7 +280,7 @@ class TestTreytuxControl(unittest.TestCase):
     def test_daemon_foreground(self):
         try:
             thread = threading.Thread(
-                target=filesynd_main, args=(self.config.config_file,)
+                target=watchsyncd_main, args=(self.config.config_file,)
             )
             self._test_daemon_foreground(thread)
         finally:
@@ -290,7 +291,6 @@ class TestTreytuxControl(unittest.TestCase):
 
     def _test_daemon_foreground(self, thread):
         self.reset_test_folder()
-        # shutil.rmtree(self.path("storage"))
         daemon = Connector("")
         self.assertFalse(daemon.is_alive())
         daemon = Connector(self.config.socket_file)
@@ -305,7 +305,7 @@ class TestTreytuxControl(unittest.TestCase):
         else:
             self.fail("Daemon not started.")
         with self.assertRaises(RuntimeError):
-            filesynd_main(self.config.config_file)
+            watchsyncd_main(self.config.config_file)
         _, output = self.execute("start")
         self.assertIn("Daemon is already running", output)
         self.assertTrue(os.path.exists(self.config.socket_file))

@@ -7,18 +7,19 @@ from watchsync.utils import path
 
 class Config:
     @classmethod
-    def get_config(cls, config_file: str = ""):
+    def get_config(cls, config_file: str = "", use_defaults: bool = True):
         config_file_defaults = [
             path(config_file) if config_file else None,
             path("/etc/watchsync/config.yml"),
             path("~/.config/watchsync/config.yml"),
         ]
+        if not use_defaults:
+            config_file_defaults = [config_file_defaults[0]]
         for config_file in config_file_defaults:
             if config_file and os.path.exists(config_file):
-                break
-        if not config_file:
-            raise FileNotFoundError("Config file not found.")
-        return Config(config_file=config_file)
+                return Config(config_file=config_file)
+        else:
+            raise FileNotFoundError(f"Config file {config_file} not found.")
 
     def __init__(self, config_file: str, **args):
         self.config_file = config_file

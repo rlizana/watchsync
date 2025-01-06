@@ -1,0 +1,6 @@
+*.pyc
+.venv
+poetry.lock
+dist
+tests/workspace
+.coverage

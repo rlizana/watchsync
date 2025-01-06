@@ -1,0 +1,70 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run watchsync CLI",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/watchsync/__main__.py",
+      "args": [],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/watchsync"
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "Run watchsync CLI with Arguments",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/watchsync/__main__.py",
+      "args": "${input:args}",
+      "argsPrompt": true,
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/watchsync"
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "Run daemon",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/watchsync/daemon/watchsyncd.py",
+      "argsPrompt": true,
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/watchsync"
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "Test watchsync",
+      "type": "python",
+      "request": "launch",
+      "module": "unittest",
+      "args": [
+        "discover",
+        "-s",
+        "tests",
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/watchsync",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/watchsync"
+      },
+      "justMyCode": false
+    }
+  ],
+  "inputs": [
+    {
+      "id": "args",
+      "type": "promptString",
+      "description": "Arguments for watchsync CLI",
+      "default": "file list"
+    }
+  ]
+}

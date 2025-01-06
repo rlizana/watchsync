@@ -24,13 +24,8 @@ class Config:
     def __init__(self, config_file: str, **args):
         self.config_file = config_file
         self.config_path = os.path.dirname(config_file)
-        self.socket_file = False
-        self.storages = {}
-        self.files = {}
-        self.__dict__.update(args)
-        if not self.socket_file:
-            self.socket_file = path(self.config_path, "watchsyncd.socket")
         self.read()
+        self.__dict__.update(args)
 
     def get(self, key: str, default=None):
         return getattr(self, key, default)
@@ -50,6 +45,9 @@ class Config:
         return data
 
     def read(self):
+        self.socket_file = path(self.config_path, "watchsyncd.socket")
+        self.storages = {}
+        self.files = {}
         if not os.path.exists(self.config_file):
             return False
         with open(self.config_file, "r", encoding="utf-8") as file:

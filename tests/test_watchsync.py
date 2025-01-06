@@ -62,6 +62,17 @@ class TestTreytuxControl(unittest.TestCase):
         result_code = cmd.execute(" ".join(args))
         return result_code, cmd._io.fetch_output()
 
+    def test_reset_test_folder(self):
+        self.reset_test_folder()
+        self.assertEqual(self.path("config.yml"), self.config.config_file)
+        self.assertTrue(os.path.exists(self.workspace))
+        self.assertTrue(os.path.exists(self.path("config.yml")))
+        self.assertTrue(os.path.exists(self.path_file()))
+        self.assertTrue(os.path.exists(self.path("storage")))
+        self.config.read()
+        self.assertEqual(self.config.storages, {})
+        self.assertEqual(self.config.files, {})
+
     def test_utils_shell(self):
         result = utils.shell(
             "logger -p local0.info 'WatchSync Test Message'", show_stdout=False
@@ -92,6 +103,9 @@ class TestTreytuxControl(unittest.TestCase):
         self.assertEqual(self.config.__repr__(), str(self.config))
         with self.assertRaises(FileNotFoundError):
             Config.get_config(config_file="/not-exists", use_defaults=False)
+        config = Config(config_file="not-exist")
+        self.assertEqual(config.storages, {})
+        self.assertEqual(config.files, {})
 
     def test_help(self):
         cmd = CommandTester(self.app.find("help-list"))

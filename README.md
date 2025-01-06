@@ -1,6 +1,8 @@
 
 # WatchSync
 
+![Build Status](https://github.com/rlizana/watchsync/actions/workflows/ci.yml/badge.svg)
+
 WatchSync is a tool for synchronizing files when they are created or modified across different storage locations. A file can also be a local directory that, when detected as modified or created, is synchronized with the configured storage locations. A storage location can be a local or remote directory where a copy of the files will be sent.
 
 The purpose of this tool is to have a backup of files in different storage locations to avoid losing important information. It is a file replication solution that is very easy to configure and use.

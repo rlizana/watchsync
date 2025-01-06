@@ -42,6 +42,11 @@ def shell(cmd, timeout=10, show_stdout=True, **kwargs):
         process.kill()
         logger.error(f"Timeout expired for command: {cmd}")
         raise
+    finally:
+        if process.stdout:
+            process.stdout.close()
+        if process.stderr:
+            process.stderr.close()
     if process.returncode != 0 and stderr:
         logger.error(f"Error executing command: {cmd}")
         logger.error(stderr)

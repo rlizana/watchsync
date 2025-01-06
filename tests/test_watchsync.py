@@ -81,8 +81,8 @@ class TestTreytuxControl(unittest.TestCase):
     def test_config(self):
         self.reset_test_folder()
         os.remove(self.config.config_file)
-        result_code, output = self.execute("version")
-        self.assertEqual(result_code, 0)
+        with self.assertRaises(FileNotFoundError):
+            self.execute("version")
         self.assertFalse(os.path.exists(self.config.config_file))
         shutil.rmtree(self.config.config_path)
         self.config.write()
@@ -329,6 +329,7 @@ class TestTreytuxControl(unittest.TestCase):
         self.execute(f'storage add storage1 rsync {self.path("storage")}')
         self.execute(f"file add {self.path_file()} --storage=storage1")
         self.assertEqual(result_code, 0)
+        self.assertIn("storage1", self.config.storages)
         self.assertFalse(os.path.exists(self.path_storage("test.txt")))
         self.create_file("test.txt")
         self.assertTrue(os.path.exists(self.path_file("test.txt")))
@@ -337,6 +338,7 @@ class TestTreytuxControl(unittest.TestCase):
         os.remove(self.path_file("test.txt"))
         result_code, output = self.execute("reload")
         self.assertEqual(result_code, 0)
+        self.assertIn("storage1", self.config.storages)
         self.assertIn("Reloaded", output)
         self.assertFalse(os.path.exists(self.path_storage("test.txt")))
         self.create_file("test.txt")

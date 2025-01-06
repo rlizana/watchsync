@@ -14,7 +14,12 @@ class StartCommand(Command):
             self._warn("Daemon is already running.")
             return
         cmd = f"poetry run watchsyncd {self.config.config_file}"
+        cmd = (
+            "poetry run python3 -m watchsync.daemon.watchsyncd "
+            f"{self.config.config_file}"
+        )
         self._debug(f'Execute command "{cmd}"')
+        print(cmd)
         process = subprocess.Popen(
             cmd.split(" "),
             stdout=subprocess.PIPE,

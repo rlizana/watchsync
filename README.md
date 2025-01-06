@@ -86,7 +86,16 @@ With coverage:
 poetry run coverage run -m unittest discover -s tests
 poetry run coverage report
 ```
-Or you can run the command
+Or you can run with one of these commands
 ```bash
 poetry run watchsync
+poetry run python3 -m watchsync
+poetry run python3 -m watchsync.daemon.watchsyncd
+```
+
+## Test using Docker
+You can use docker to test the tool. The following command will build the image and run the tests:
+```bash
+docker build -t watchsync-test .
+docker run --rm -v $(pwd)/watchsync:/watchsync/watchsync -v $(pwd)/tests:/watchsync/tests watchsync-test
 ```

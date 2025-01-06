@@ -39,10 +39,11 @@ class Command(BaseCommand):
             logging.DEBUG if verbosity == Verbosity.VERBOSE else logging.INFO
         )
         logger.setLevel(log_level)
-        self.config = Config(
+        self.config = Config.get_config(
             config_file=self.path(self.option("config-file")),
-            socket_file=self.path(self.option("socket-file")),
         )
+        if self.option("socket-file"):
+            self.config.socket_file = self.path(self.option("socket-file"))
         self.add_style("error", fg="red", options=["bold"])
         self.add_style("info", fg="blue")
         self.add_style("debug", fg="cyan")

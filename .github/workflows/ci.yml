@@ -24,8 +24,20 @@ jobs:
     - name: Run pre-commit
       run: poetry run pre-commit run --all-files
 
-    - name: Run unit tests
-      run: poetry run coverage run -m unittest discover -s tests
+    - name: Build Docker image
+      run: docker build -t watchsync-test .
 
-    - name: Report coverage
-      run: poetry run coverage report
+    - name: Run tests in Docker container
+      run: docker run --name watchsync-container watchsync-test
+
+    - name: Copy coverage report
+      run: docker cp watchsync-container:/watchsync/htmlcov ./
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ./htmlcov
+
+    - name: Clean up
+      run: docker rm watchsync-container

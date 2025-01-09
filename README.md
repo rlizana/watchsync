@@ -1,6 +1,9 @@
 # WatchSync
-
-![Build Status](https://github.com/rlizana/watchsync/actions/workflows/ci.yml/badge.svg)
+![pre-commit Status](https://github.com/rlizana/watchsync/actions/workflows/pre-commit.yml/badge.svg)
+![Test Status](https://github.com/rlizana/watchsync/actions/workflows/test.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/rlizana/watchsync/badge.svg?branch=main)](https://coveralls.io/github/rlizana/watchsync?branch=main)
+[![PyPI version](https://badge.fury.io/py/watchsync.svg)](https://badge.fury.io/py/watchsync)
+[![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://opensource.org/licenses/AGPL-3.0)
 
 WatchSync is a tool for synchronizing files when they are created or modified across different storage locations. A file can also be a local directory that, when detected as modified or created, is synchronized with the configured storage locations. A storage location can be a local or remote directory where a copy of the files will be sent.
 
@@ -111,7 +114,7 @@ You can use docker to test the tool. The following command will build the image 
 
 ```bash
 docker build -t watchsync-test .
-docker run --name watchsync-container watchsync-test
+docker run --rm watchsync-test
 ```
 
 If you are developing, you can use the following command to mount the current directory in the container and run the tests:

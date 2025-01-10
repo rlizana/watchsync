@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "watchsync"
-version = "0.1.1"
+version = "0.1.2"
 description = "A Python-based tool for real-time file monitoring and synchronization, designed to replicate changes between local or remote locations."
 authors = ["Roberto Lizana <rober.lizana@gmail.com>"]
 readme = "README.md"

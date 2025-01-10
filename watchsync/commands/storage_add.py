@@ -1,3 +1,5 @@
+import os
+
 from cleo.helpers import argument
 
 from watchsync import utils
@@ -37,10 +39,12 @@ class StorageAddCommand(Command):
 
     def _storage_add_rsync(self):
         storage_path = utils.path(self.argument("path"))
+        if not os.path.exists(storage_path):
+            storage_path = self.argument("path")
         self.config.storages[self.argument("name")] = {
             "type": "rsync",
             "path": storage_path,
-            "options": {},
+            "options": [],
         }
         self.config.write()
         self._success(f'Storage "{self.argument("name")}" added.')

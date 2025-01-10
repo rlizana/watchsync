@@ -18,7 +18,7 @@ class StorageListCommand(Command):
                         name,
                         storage["type"],
                         storage["path"],
-                        str(storage["options"]),
+                        "\n".join(storage["options"]),
                     ]
                 ]
             )

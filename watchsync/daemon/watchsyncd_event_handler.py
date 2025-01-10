@@ -43,9 +43,12 @@ class WatchsyncdEventHandler(FileSystemEventHandler):
             getattr(self, method)(file_path, self.config.storages[storage])
 
     def _sync_rsync(self, file_path, storage):
-        rsync_command = f'rsync -azP {self.path}/ {storage["path"]} --relative'
+        rsync_command = (
+            f'rsync -azP {self.path}/ {storage["path"]} '
+            f'{" ".join(storage["options"])} --relative'
+        )
         for exclude in self.config.files[self.path]["excludes"]:
             rsync_command += f" --exclude {exclude}"
         logger.info(f"Rsync: {rsync_command}")
-        utils.shell(rsync_command)
+        utils.shell(rsync_command, timeout=None)
         logger.info(f"Rsync synced {file_path} to {storage}")

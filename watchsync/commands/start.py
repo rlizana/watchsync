@@ -1,4 +1,6 @@
+import os
 import subprocess
+import sys
 
 from watchsync.command import Command
 from watchsync.daemon.connector import Connector
@@ -13,13 +15,15 @@ class StartCommand(Command):
         if daemon.is_alive():
             self._warn("Daemon is already running.")
             return
-        cmd = f"poetry run watchsyncd {self.config.config_file}"
-        cmd = (
-            "poetry run python3 -m watchsync.daemon.watchsyncd "
-            f"{self.config.config_file}"
+        daemon_executable = os.path.join(
+            os.path.dirname(sys.executable), "watchsyncd"
         )
+        if not os.path.exists(daemon_executable):
+            raise FileNotFoundError(
+                f"watchsyncd executable not found in {daemon_executable}"
+            )
+        cmd = f"{daemon_executable} {self.config.config_file}"
         self._debug(f'Execute command "{cmd}"')
-        print(cmd)
         process = subprocess.Popen(
             cmd.split(" "),
             stdout=subprocess.PIPE,

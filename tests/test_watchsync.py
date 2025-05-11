@@ -152,7 +152,8 @@ class TestTreytuxControl(unittest.TestCase):
         self.assertIn("test1", output)
         self.assertIn("rsync", output)
         self.assertIn("/tmp", output)
-        self.assertIn("{}", output)
+        self.assertTrue("Options" in output)
+        self.assertTrue("| test1 | rsync | /tmp |" in output or "{}" in output)
         result_code, output = self.execute("storage add test2 rsync /tmp")
         self.assertEqual(result_code, 0)
         result_code, output = self.execute("storage add test2 rsync /tmp")
@@ -168,7 +169,8 @@ class TestTreytuxControl(unittest.TestCase):
         self.assertIn("test2", output)
         self.assertIn("rsync", output)
         self.assertIn("/tmp", output)
-        self.assertIn("{}", output)
+        self.assertTrue("| test1 | rsync | /tmp |" in output or "{}" in output)
+        self.assertTrue("| test2 | rsync | /tmp |" in output or "{}" in output)
         result_code, output = self.execute("storage del not-exist")
         self.assertEqual(result_code, 1)
         self.assertIn("Storage not exists", output)
@@ -180,7 +182,10 @@ class TestTreytuxControl(unittest.TestCase):
         self.assertIn("test2", output)
         self.assertIn("rsync", output)
         self.assertIn("/tmp", output)
-        self.assertIn("{}", output)
+        self.assertFalse(
+            "| test1 | rsync | /tmp |" in output or "{}" in output
+        )
+        self.assertTrue("| test2 | rsync | /tmp |" in output or "{}" in output)
 
     def test_file_rsync(self):
         self.reset_test_folder()
@@ -406,3 +411,26 @@ class TestTreytuxControl(unittest.TestCase):
         result_code, _ = self.execute(f"file sync {self.path_file()}")
         self.assertEqual(result_code, 0)
         self.assertFalse(os.path.exists(self.path_storage("test.not")))
+
+    def test_daemon_restart(self):
+        self.reset_test_folder()
+        self.execute("stop")
+        self.execute("start")
+        for _ in range(10):
+            time.sleep(1)
+            _, output = self.execute("status")
+            if "running" in output:
+                break
+        else:
+            self.fail("Daemon not started before restart.")
+        result_code, output = self.execute("restart")
+        self.assertEqual(result_code, 0)
+        self.assertIn("Daemon restarted", output)
+        for _ in range(10):
+            time.sleep(1)
+            _, output = self.execute("status")
+            if "running" in output:
+                break
+        else:
+            self.fail("Daemon not running after restart.")
+        self.assertTrue(os.path.exists(self.config.socket_file))

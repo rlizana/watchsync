@@ -122,3 +122,17 @@ If you are developing, you can use the following command to mount the current di
 ```bash
 docker run --rm -v $(pwd)/watchsync:/watchsync/watchsync -v $(pwd)/tests:/watchsync/tests watchsync-test
 ```
+
+Otherwise, you can run the container interactively and run the tests inside it:
+
+```bash
+docker run -it --name watchsync-dev -v $(pwd)/watchsync:/watchsync/watchsync -v $(pwd)/tests:/watchsync/tests watchsync-test /bin/bash
+poetry run python3 -m unittest discover -s tests
+```
+
+You can also run a specific test with the following command:
+
+```bash
+docker run -it --name watchsync-dev -v $(pwd)/watchsync:/watchsync/watchsync -v $(pwd)/tests:/watchsync/tests watchsync-test /bin/bash
+poetry run python3 -m unittest tests.test_watchsync.TestTreytuxControl.test_daemon_restart
+```

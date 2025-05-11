@@ -7,6 +7,7 @@ from watchsync.commands.file_list import FileListCommand
 from watchsync.commands.file_sync import WatchSyncCommand
 from watchsync.commands.help_list import HelpListCommand
 from watchsync.commands.reload import ReloadCommand
+from watchsync.commands.restart import RestartCommand
 from watchsync.commands.start import StartCommand
 from watchsync.commands.status import StatusCommand
 from watchsync.commands.stop import StopCommand
@@ -25,8 +26,8 @@ def create_app():
     app.add(FileAddCommand())
     app.add(FileDelCommand())
     app.add(FileListCommand())
-    app.add(WatchSyncCommand())
     app.add(ReloadCommand())
+    app.add(RestartCommand())
     app.add(StartCommand())
     app.add(StatusCommand())
     app.add(StopCommand())
@@ -34,6 +35,7 @@ def create_app():
     app.add(StorageDelCommand())
     app.add(StorageListCommand())
     app.add(VersionCommand())
+    app.add(WatchSyncCommand())
     return app
 
 
